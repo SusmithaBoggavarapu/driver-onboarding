@@ -26,14 +26,9 @@ public class UserController {
     @PostMapping({"/user/register"})
     public User register(@RequestBody UserDto userDto) {
         User user = User.builder().username(userDto.getUsername()).password(userDto.getPassword()).build();
-        return userService.register(user);
+        return userService.registerAsUser(user);
     }
 
-    @GetMapping({"/validateAdmin"})
-    @PreAuthorize("hasRole('Admin')")
-    public Boolean forAdmin(){
-        return true;
-    }
 
     @GetMapping({"/validateUser"})
     @PreAuthorize("hasRole('User')")

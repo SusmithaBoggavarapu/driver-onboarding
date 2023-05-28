@@ -21,6 +21,9 @@ public class Vehicle {
     @Column(name = "id")
     private int id;
 
+    @Column(name = "vehicle_no")
+    private String vehicleNumber;
+
     @Column(name = "model")
     private String model;
 

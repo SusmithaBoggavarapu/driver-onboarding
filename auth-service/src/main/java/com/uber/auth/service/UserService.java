@@ -41,7 +41,7 @@ public class UserService {
 
     }
 
-    public User register(User user) {
+    public User registerAsUser(User user) {
         Role role = roleJpaRepository.findById("User").get();
         Set<Role> userRoles = new HashSet<>();
         userRoles.add(role);
@@ -50,6 +50,7 @@ public class UserService {
 
         return userJpaRepository.save(user);
     }
+
 
     public String getEncodedPassword(String password) {
         return passwordEncoder.encode(password);

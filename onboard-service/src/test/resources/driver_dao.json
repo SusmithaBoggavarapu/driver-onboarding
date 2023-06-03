@@ -1,0 +1,11 @@
+{
+  "firstName" : "nandan",
+  "lastName" : "boggavarapu",
+  "email": "susmitha.vutturi@gmail.com",
+  "mobile" : "9866968355",
+  "address" : {
+    "city" : "bengalore",
+    "state" : "karnataka",
+    "pincode" : 500086
+  }
+}

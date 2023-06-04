@@ -1,6 +1,6 @@
 package com.uber.service;
 
-import com.uber.common.exception.ApplicationException;
+import com.uber.common.exception.BadRequestException;
 import com.uber.common.exception.Errors;
 import com.uber.common.model.DocumentType;
 import com.uber.entity.user.Driver;
@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -36,10 +37,14 @@ public class OnboardService {
         List<DriverDocument> driverDocuments = driverDocumentsJpaRepository.findByDriverId(driver.getId());
         driverDocuments.stream().filter(driverDocument -> driverDocument.getIsActive()).forEach(driverDocument -> allDocumentTypes.add(driverDocument.getType()));
 
-        if (allDocumentTypes.containsAll(Arrays.asList(DocumentType.values())))
+        List<DocumentType> mandatoryDocuments = new LinkedList<>(Arrays.asList(DocumentType.values()));
+
+        if (allDocumentTypes.containsAll(mandatoryDocuments))
             producerService.sendMessage(onboardingTopic, driver.getMobile());
         else {
-            throw new ApplicationException(Errors.MISSING_DOCUMENTS);
+
+            mandatoryDocuments.removeAll(allDocumentTypes);
+            throw new BadRequestException(Errors.MISSING_DOCUMENTS, mandatoryDocuments.toString());
         }
     }
 

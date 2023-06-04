@@ -4,6 +4,7 @@ import com.uber.client.AuthClient;
 import com.uber.common.model.DocumentType;
 import com.uber.common.response.Response;
 import com.uber.service.DocumentService;
+import com.uber.service.DocumentValidationUtil;
 import com.uber.service.FileService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.EnumUtils;
@@ -33,6 +34,7 @@ public class RegisterDocumentsController extends BaseController {
     @Autowired
     private DocumentService documentService;
 
+
     @Autowired
     private FileService fileService;
     @Autowired
@@ -52,16 +54,16 @@ public class RegisterDocumentsController extends BaseController {
             throw new IllegalArgumentException(String.format("unsupported document %s ", documentType));
         }
 
-
         File savedFile = postDocument(mobile, docTypeEnum, file);
 
-       return  ResponseEntity.ok(Response.builder().status("SUCCESS").payload(savedFile.getName()).build());
+        return ResponseEntity.ok(Response.builder().status("SUCCESS").payload(savedFile.getName()).build());
 
     }
 
     @Transactional
     private File postDocument(String mobile, DocumentType docTypeEnum, MultipartFile file) {
         File savedFile = fileService.saveFile(file);
+        DocumentValidationUtil.validateExtension(savedFile.getName());
         documentService.saveDocument(mobile, savedFile, docTypeEnum);
         savedFile.delete();
         return savedFile;

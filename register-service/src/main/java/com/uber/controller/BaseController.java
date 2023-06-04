@@ -6,6 +6,7 @@ import com.uber.common.exception.NoContentException;
 import com.uber.common.exception.UnauthorizedException;
 import com.uber.common.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,6 +15,7 @@ import org.springframework.web.client.ResourceAccessException;
 
 import javax.validation.ConstraintViolationException;
 import java.io.FileNotFoundException;
+import java.util.Objects;
 
 @Slf4j
 public class BaseController {
@@ -58,7 +60,12 @@ public class BaseController {
     public ResponseEntity<ErrorResponse> handleException(BadRequestException ex) {
         log.error("bad request exception ", ex);
         Errors error = ex.getErrors();
-        return ResponseEntity.badRequest().body(new ErrorResponse(String.valueOf(error.getErrorCode()), error.getErrorMessage()));
+        ErrorResponse errorResponse = new ErrorResponse(String.valueOf(error.getErrorCode()), error.getErrorMessage());
+
+        if (Objects.nonNull(ex.getMessage()) && !ex.getMessage().equalsIgnoreCase(error.getErrorMessage())) {
+            errorResponse.setErrorDescription(errorResponse.getErrorDescription() + StringUtils.SPACE + ex.getMessage());
+        }
+        return ResponseEntity.badRequest().body(errorResponse);
     }
 
     @ExceptionHandler(UnauthorizedException.class)

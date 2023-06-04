@@ -1,6 +1,7 @@
 package com.uber.service;
 
-import com.uber.common.exception.BaseException;
+import com.uber.common.exception.ApplicationException;
+import com.uber.common.exception.BadRequestException;
 import com.uber.common.exception.Errors;
 import com.uber.common.model.DocumentType;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,8 @@ public class DocumentValidationService {
 
     private final String TMP_FILE_PATH = "/tmp/";
 
+    private final List<String> supportedFormats = List.of("jpeg", "jgp", "pdf");
+
     public void validateDocument(List<String> documents) {
         documents.forEach(document -> validateDocument(document));
     }
@@ -28,15 +31,22 @@ public class DocumentValidationService {
     public void validate(Map<DocumentType, File> documents) {
         Set<DocumentType> allDocumentTypes = documents.keySet();
         if (allDocumentTypes.containsAll(Arrays.asList(DocumentType.values()))) {
-            throw new BaseException(Errors.MISSING_DOCUMENTS);
+            throw new ApplicationException(Errors.MISSING_DOCUMENTS);
         }
 
         for (Map.Entry<DocumentType, File> document : documents.entrySet()) {
             File file = document.getValue();
-            if (!file.getName().contains(".pdf")) {
-                throw new BaseException(Errors.UNSUPPORTED_DOCUMENT_TYPE);
-            }
+            validateExtension(file.getName());
         }
 
+    }
+
+    public void validateExtension(String fileName) {
+        for (String supportedFormat : supportedFormats) {
+            if (fileName.toLowerCase().endsWith(supportedFormat)) {
+                return;
+            }
+        }
+        throw new BadRequestException(Errors.UNSUPPORTED_FILE_FORMAT);
     }
 }

@@ -4,7 +4,10 @@ import com.uber.auth.entity.UserDto;
 import com.uber.auth.service.UserService;
 import com.uber.entity.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,7 +35,13 @@ public class UserController {
 
     @GetMapping({"/validateUser"})
     @PreAuthorize("hasRole('User')")
-    public Boolean forUser(){
-        return true;
+    public String forUser(){
+        return getUsername();
+    }
+
+    @Secured("ROLE_VIEWER")
+    public String getUsername() {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        return securityContext.getAuthentication().getName();
     }
 }

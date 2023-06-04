@@ -1,6 +1,6 @@
 package com.uber.controller;
 
-import com.uber.entity.common.Response;
+import com.uber.common.response.Response;
 import com.uber.service.OnboardService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Slf4j
-@RequestMapping(value = {"onboard/{userId}"})
+@RequestMapping(value = {"onboard/trigger/{userId}"})
 public class OnboardController {
     @Autowired
     private OnboardService onboardService;
@@ -22,7 +22,8 @@ public class OnboardController {
     @PostMapping
     public ResponseEntity<Response<String>> onboard(@RequestHeader(HttpHeaders.AUTHORIZATION) String authToken, @PathVariable String userId) {
         log.info("onboarding user {} ", userId);
-        onboardService.onboard(userId);
+        onboardService.triggerOnboarding(userId);
         return ResponseEntity.ok(null);
     }
+
 }

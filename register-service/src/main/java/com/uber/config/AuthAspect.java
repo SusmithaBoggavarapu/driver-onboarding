@@ -1,14 +1,15 @@
 package com.uber.config;
 
-import com.uber.auth.AuthService;
-import com.uber.entity.common.Response;
+import com.uber.client.AuthClient;
+import com.uber.common.exception.Errors;
+import com.uber.common.exception.UnauthorizedException;
+import com.uber.common.response.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
@@ -17,24 +18,23 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class AuthAspect {
 
-    @Autowired
-    private AuthService authService;
-
     private static final String INVALID_AUTHORIZATION_MESSAGE = "invalid authorization token";
 
     private static final String INVALID_USER = "invalid user";
 
-    private static final int ERROR_CODE = 401;
+
+    @Autowired
+    private AuthClient authClient;
 
     @Around(value = "execution(* com.uber.controller.*.*(..)) and args(authToken,..)")
-    public ResponseEntity<Response<String>> authServiceValidation(ProceedingJoinPoint joinPoint, String authToken) throws Throwable {
+    public ResponseEntity<Response> authServiceValidation(ProceedingJoinPoint joinPoint, String authToken) throws Throwable {
         log.info("auth check for {} with  authToken {} ", joinPoint.getSignature().getName(), authToken);
 
-        if (StringUtils.isEmpty(authToken) || !authService.isValidUser(authToken)) {
+        if (StringUtils.isEmpty(authToken)) {
             log.info("authorization failed {}  authToken {}", joinPoint.getStaticPart().getSignature().getName(), authToken);
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Response<>(null, null, new Response.Errors(ERROR_CODE, INVALID_USER)));
+            throw new UnauthorizedException(Errors.UNAUTHORIZED_INVALID_TOKEN);
         }
-        return (ResponseEntity<Response<String>>) joinPoint.proceed();
+        return (ResponseEntity<Response>)  joinPoint.proceed();
 
     }
 

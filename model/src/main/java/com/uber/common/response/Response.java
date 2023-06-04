@@ -1,22 +1,15 @@
 package com.uber.entity.common;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Response<T> {
     private String status;
     private T payload;
-    private Errors error;
-
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Data
-    public static class Errors {
-        int code;
-        String errorCode;
-    }
 }

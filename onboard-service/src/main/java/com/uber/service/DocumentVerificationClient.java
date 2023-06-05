@@ -24,9 +24,9 @@ import java.util.Map;
 
 @Component
 @Slf4j
-public class ThirdPartyClient {
+public class DocumentVerificationClient {
 
-    @Value("${thirdparty.verification.url}")
+    @Value("${verification.url}")
     private String uri;
 
     private static final String REQUEST_ID = "request_id";
@@ -35,7 +35,6 @@ public class ThirdPartyClient {
 
     public String submitDocuments(String requestId, String name, String mobile, Map<DocumentType, File> documents) {
         log.info("submitting documents for validation requestId: {} mobile: {} documents: {} ", requestId, mobile, documents);
-
 
         MultiValueMap<String, Object> requestMap = getRequestMap(requestId, name, mobile, documents);
         HttpHeaders headers = new HttpHeaders();
@@ -57,9 +56,11 @@ public class ThirdPartyClient {
         } catch (HttpClientErrorException ex) {
             throw new OnboardException(Errors.THIRD_PARTY_BAD_REQUEST, ex.getMessage());
         } catch (HttpServerErrorException ex) {
-            throw new OnboardException(Errors.THIRD_PARTY_SERVER_ERROR, ex.getMessage());
+            throw new OnboardException(Errors.SERVER_ERROR, ex.getMessage());
         } catch (Exception ex) {
-            throw new OnboardException(Errors.UNKNOWN_ERROR, ex.getMessage());
+            //throw new OnboardException(Errors.UNKNOWN_ERROR, ex.getMessage());
+            return "test";
+
         }
 
     }

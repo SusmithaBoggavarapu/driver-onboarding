@@ -17,7 +17,7 @@ public class ThirdPartyResponseHandler implements ResponseErrorHandler {
         }
 
         if (response.getStatusCode().is5xxServerError()) {
-            throw new OnboardException(Errors.THIRD_PARTY_SERVER_ERROR);
+            throw new OnboardException(Errors.SERVER_ERROR);
         }
 
         if (response.getStatusCode().isError()) {

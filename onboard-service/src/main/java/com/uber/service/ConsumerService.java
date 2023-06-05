@@ -1,6 +1,6 @@
 package com.uber.service;
 
-import com.uber.common.exception.BaseException;
+import com.uber.common.exception.ApplicationException;
 import com.uber.common.model.DocumentType;
 import com.uber.config.exception.OnboardException;
 import com.uber.entity.document.Document;
@@ -43,10 +43,7 @@ public class ConsumerService {
     @Autowired
     private DriverDocumentsJpaRepository driverDocumentsJpaRepository;
     @Autowired
-    private ThirdPartyClient client;
-
-    @Autowired
-    private DocumentValidationService documentValidationService;
+    private DocumentVerificationClient client;
 
     private static final String UPDATED_BY = "onboarding-service";
 
@@ -81,7 +78,7 @@ public class ConsumerService {
         DocumentStatus status = DocumentStatus.PENDING_VALIDATION;
 
         try {
-            documentValidationService.validate(validateDocuments);
+            DocumentValidationUtil.validate(validateDocuments);
             details = client.submitDocuments(auditOnboard.getId(), driver.getFirstName(), driver.getMobile(), validateDocuments);
             status = DocumentStatus.IN_VALIDATION;
             auditOnboard.setStatus(OnboardStatus.INITIATED);
@@ -91,7 +88,7 @@ public class ConsumerService {
             log.error("submission failed");
             auditOnboard.setStatus(OnboardStatus.INITIATION_FAILURE);
             auditOnboard.setDetails(details);
-        } catch (BaseException ex) {
+        } catch (ApplicationException ex) {
             details = "validation failure";
             auditOnboard.setStatus(OnboardStatus.INITIATION_FAILURE);
             auditOnboard.setDetails(ex.getErrors().getErrorCode() + ex.getErrors().getErrorMessage());
@@ -102,7 +99,6 @@ public class ConsumerService {
         for (AuditOnboardDetails auditOnboardDetails :
                 auditOnboardDetailsList) {
             auditOnboardDetails.setStatus(status);
-            auditOnboardDetails.setDetails(details);
         }
 
         auditOnboard.setAuditOnboardDetails(auditOnboardDetailsList);

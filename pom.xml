@@ -3,13 +3,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<modules>
-		<module>register-service</module>
 		<module>auth-service</module>
-		<module>thirdparty-service</module>
+		<module>validation-service</module>
 		<module>onboard-service</module>
-		<module>fraud-service</module>
 		<module>common-data-gateway</module>
-	</modules>
+		<module>register-service</module>
+        <module>model</module>
+    </modules>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -17,9 +17,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.uber</groupId>
-	<artifactId>driverDto-onboarding</artifactId>
+	<artifactId>driver-onboarding</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>driverDto-onboarding</name>
+	<name>driver-onboarding</name>
 	<description>Demo project for Spring Boot</description>
 	<packaging>pom</packaging>
 	<properties>
@@ -63,23 +63,10 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.12.0</version>
 		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-
 </project>

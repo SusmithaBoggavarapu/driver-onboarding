@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.sql.Blob;
 import java.sql.Timestamp;
@@ -20,14 +22,16 @@ public class Document {
 
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "content")
     private Blob content;
 
-    @Column(name = "created_on")
+    @Column(name = "file_name")
+    private String fileName;
+
+    @Column(name = "created_on", insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp createdOn;
 
-    @Column(name = "created_by")
-    private String createdBy;
 }

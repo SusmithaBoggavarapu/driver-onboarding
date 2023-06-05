@@ -1,24 +1,14 @@
 package com.uber.exception;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.uber.common.exception.ApplicationException;
+import com.uber.common.exception.Errors;
 
-public class DocumentValidationException extends RuntimeException {
-    private final Errors errors;
+public class DocumentValidationException extends ApplicationException {
 
     public DocumentValidationException(Errors errors) {
-        super(errors.getErrorMessage());
-        this.errors = errors;
+        super(errors);
     }
 
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class Errors {
-        private String errorCode;
-        private String errorMessage;
-    }
 }
 
 

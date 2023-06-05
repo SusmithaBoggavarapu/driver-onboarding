@@ -7,10 +7,9 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import java.sql.Timestamp;
 
 @Builder
@@ -20,12 +19,9 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 public class Address {
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "driver_id", referencedColumnName = "id")
-    private Driver driver;
-
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "city")
@@ -37,15 +33,10 @@ public class Address {
     @Column(name = "pincode")
     private int pincode;
 
-    @Column(name = "created_on", insertable = false)
+    @Column(name = "created_on", insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp createdOn;
 
-    @Column(name = "created_by")
-    private String createdBy;
-
-    @Column(name = "updated_on", insertable = false)
+    @Column(name = "updated_on", insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private Timestamp updatedOn;
 
-    @Column(name = "updated_by")
-    private String updatedBy;
 }

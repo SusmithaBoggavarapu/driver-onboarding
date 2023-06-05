@@ -1,5 +1,6 @@
 package com.uber.entity.user;
 
+import com.uber.common.model.DocumentType;
 import com.uber.entity.document.Document;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,7 +30,7 @@ import java.sql.Timestamp;
 @Table(uniqueConstraints={
         @UniqueConstraint(columnNames = {"driver_id", "type"})
 })
-public class DriverDocuments {
+public class DriverDocument {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

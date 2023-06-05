@@ -4,34 +4,37 @@ import com.uber.common.exception.ApplicationException;
 import com.uber.common.exception.BadRequestException;
 import com.uber.common.exception.Errors;
 import com.uber.common.model.DocumentType;
-import org.springframework.stereotype.Service;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@Service
-public class DocumentValidationService {
+public class DocumentValidationUtil {
 
 
-    private final String TMP_FILE_PATH = "/tmp/";
+    private static final String TMP_FILE_PATH = "/tmp/";
 
-    private final List<String> supportedFormats = List.of("jpeg", "jgp", "pdf");
+    private static final List<String> supportedFormats = List.of(".jpeg", ".jgp", ".pdf");
 
-    public void validateDocument(List<String> documents) {
+    public static void validateDocument(List<String> documents) {
         documents.forEach(document -> validateDocument(document));
     }
 
-    public void validateDocument(String document) {
+    public static void validateDocument(String document) {
         File file = new File(TMP_FILE_PATH + document);
     }
 
-    public void validate(Map<DocumentType, File> documents) {
+    public static void validate(Map<DocumentType, File> documents) {
         Set<DocumentType> allDocumentTypes = documents.keySet();
-        if (allDocumentTypes.containsAll(Arrays.asList(DocumentType.values()))) {
-            throw new ApplicationException(Errors.MISSING_DOCUMENTS);
+        List<DocumentType> mandatoryDocuments = new LinkedList<>(Arrays.asList(DocumentType.values()));
+
+        if (!allDocumentTypes.containsAll(mandatoryDocuments)) {
+            mandatoryDocuments.removeAll(allDocumentTypes);
+            throw new BadRequestException(Errors.MISSING_DOCUMENTS, mandatoryDocuments.toString());
         }
 
         for (Map.Entry<DocumentType, File> document : documents.entrySet()) {
@@ -41,12 +44,12 @@ public class DocumentValidationService {
 
     }
 
-    public void validateExtension(String fileName) {
+    public static void validateExtension(String fileName) {
         for (String supportedFormat : supportedFormats) {
             if (fileName.toLowerCase().endsWith(supportedFormat)) {
                 return;
             }
         }
-        throw new BadRequestException(Errors.UNSUPPORTED_FILE_FORMAT);
+        throw new BadRequestException(Errors.UNSUPPORTED_FILE_FORMAT, FilenameUtils.getExtension(fileName));
     }
 }

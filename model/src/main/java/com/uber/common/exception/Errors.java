@@ -11,7 +11,9 @@ public enum Errors {
     MISSING_DOCUMENTS(40002, "missing documents"),
     NOT_FOUND_DOCUMENT(20400,"no document found for the given document type"),
     UNSUPPORTED_DOCUMENT_TYPE(40004, "unsupported document type"),
+    UNSUPPORTED_FILE_FORMAT(40005, "unsupported file format"),
     THIRD_PARTY_BAD_REQUEST(40003, "bad request"),
+    INVALID_ONBOARD_REQUEST(40005, "either tracking device not sent / documents are not validated"),
     SERVER_ERROR(50003, "third party server error"),
 
     UNKNOWN_ERROR(60001, "unknown error"),

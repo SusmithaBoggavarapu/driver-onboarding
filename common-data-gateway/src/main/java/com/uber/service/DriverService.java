@@ -18,7 +18,7 @@ public class DriverService {
     @Autowired
     private DriverJpaRepository driverJpaRepository;
     public Driver getDriverDetails(String mobile) {
-        return driverJpaRepository.findById(mobile).get();
+        return driverJpaRepository.findByMobile(mobile).    get();
     }
 
     @Transactional
@@ -26,7 +26,6 @@ public class DriverService {
         log.info("saving driver details {} ", driver);
         if (Objects.isNull(driver) || StringUtils.isBlank(driver.getMobile()))
             throw new IllegalArgumentException("invalid driver details");
-        driver.getAddress().setDriver(driver);
         driver = driverJpaRepository.save(driver);
         log.info("driver with mobile: {} saved successfully", driver.getMobile());
         return driver;
@@ -42,14 +41,12 @@ public class DriverService {
         driverFromDB.setFirstName(driver.getFirstName());
         driverFromDB.setLastName(driver.getLastName());
         driverFromDB.setEmail(driver.getLastName());
-        driverFromDB.setUpdatedBy(driver.getUpdatedBy());
         if(Objects.nonNull(driver.getAddress())){
             Address address = driver.getAddress();
             Address addressFromDB = driverFromDB.getAddress();
             addressFromDB.setCity(address.getCity());
             addressFromDB.setPincode(address.getPincode());
             addressFromDB.setState(address.getState());
-            addressFromDB.setUpdatedBy(address.getUpdatedBy());
         }
 
         driverJpaRepository.save(driverFromDB);

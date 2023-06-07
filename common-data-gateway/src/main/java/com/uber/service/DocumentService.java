@@ -31,7 +31,7 @@ public class DocumentService {
     private DriverService driverService;
 
     @Autowired
-    private DriverDocumentsJpaRepository repository;
+    private DriverDocumentsJpaRepository driverDocumentsJpaRepository;
 
     private static final String TMP_FOLDER = "/tmp/uploads/";
 
@@ -39,21 +39,21 @@ public class DocumentService {
         Blob blob = FileUtils.getBlob(file);
         Document document = Document.builder().content(blob).fileName(file.getName()).build();
         Driver driver = driverService.getDriverDetails(mobile);
-        DriverDocument driverDocuments = repository.findByDriverIdAndType(driver.getId(), type);
+        DriverDocument driverDocuments = driverDocumentsJpaRepository.findByDriverIdAndType(driver.getId(), type);
 
         if (Objects.isNull(driverDocuments)) {
             driverDocuments = DriverDocument.builder().driver(driver).type(type).isActive(true).build();
         }
 
         driverDocuments.setDocument(document);
-        repository.save(driverDocuments);
+        driverDocumentsJpaRepository.save(driverDocuments);
 
     }
 
     public File getDocument(String mobile, DocumentType type) {
 
         Driver driver = driverService.getDriverDetails(mobile);
-        List<DriverDocument> driverDocuments = repository.findByDriverId(driver.getId());
+        List<DriverDocument> driverDocuments = driverDocumentsJpaRepository.findByDriverId(driver.getId());
         File file;
         try {
             DriverDocument driverDocument = driverDocuments.stream().filter(document -> type.equals(document.getType())).findAny().get();

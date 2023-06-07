@@ -18,7 +18,7 @@ public class DriverService {
     @Autowired
     private DriverJpaRepository driverJpaRepository;
     public Driver getDriverDetails(String mobile) {
-        return driverJpaRepository.findByMobile(mobile).    get();
+        return driverJpaRepository.findByMobile(mobile).get();
     }
 
     @Transactional

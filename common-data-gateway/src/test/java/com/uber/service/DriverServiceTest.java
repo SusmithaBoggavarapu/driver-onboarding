@@ -28,7 +28,7 @@ public class DriverServiceTest {
     void getDriverDetails() {
 
         Driver expectedDriver = Driver.builder().address(Address.builder().city("city").pincode(502300).state("telangana").build()).email("test@walmart.com").firstName("test").lastName("walmart").mobile("12345").build();
-        Mockito.when(driverJpaRepository.findById(12345)).thenReturn(Optional.of(expectedDriver));
+        Mockito.when(driverJpaRepository.findByMobile(Mockito.anyString())).thenReturn(Optional.of(expectedDriver));
         assertEquals(expectedDriver, driverService.getDriverDetails("12345"));
     }
 

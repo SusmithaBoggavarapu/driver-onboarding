@@ -22,14 +22,16 @@ public class BaseController {
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorResponse> handleException(ConstraintViolationException ex) {
-        log.error("constraint voilation exception ", ex);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(HttpStatus.BAD_REQUEST.name(), ex.getMessage()));
+        StringBuilder errorMsg = new StringBuilder();
+        ex.getConstraintViolations().stream().forEach(constraintViolation -> errorMsg.append(constraintViolation.getMessage()));
+        log.error("constraint violation exception ", ex);
+        return ResponseEntity.badRequest().body(new ErrorResponse(HttpStatus.BAD_REQUEST.name(), errorMsg.toString()));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> handleException(IllegalArgumentException ex) {
         log.error("illegal argument exception ", ex);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(HttpStatus.BAD_REQUEST.name(), ex.getMessage()));
+        return ResponseEntity.badRequest().body(new ErrorResponse(HttpStatus.BAD_REQUEST.name(), ex.getMessage()));
     }
 
     @ExceptionHandler(HttpClientErrorException.class)

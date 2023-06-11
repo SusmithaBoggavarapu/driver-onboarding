@@ -6,8 +6,9 @@
 
 Setup Local   
 
-1. Install Mysql instance up and running
-2. Start kafka server in local, commands, Go to Kafka root folder
+1. Install Java 11 and Maven
+2. Install Mysql instance up and running
+3. Start kafka server in local, commands, Go to Kafka root folder
 
     1. Start zookeeper - 2181 Port
        a. bin/zookeeper-server-start.sh config/zookeeper.properties
@@ -20,11 +21,25 @@ Setup Local
     5. List Topics
        bin/kafka-topics.sh --list --bootstrap-server localhost:9092
 
-4. Add the following to the application.properties
+### Configurations
+### DB Configurations 
+The db configurations to be put in the following modules
+    1. Auth Service
+    2. Register Service
+    3. Onboard Service
+
+```
+MYSQL_DB_URL=jdbc:mysql://localhost:3306/onboarding
+MYSQL_DB_USER_NAME=demo
+MYSQL_DB_PASSWORD=demo@123
+MYSQL_DB_CONNECTION_TIMEOUT=60000
+MYSQL_DB_MAX_POOLSIZE=50
+MYSQL_DB_IDLE_TIMEOUT=60000
 ```
 
-Timeout for connecting to queue is 60000 ms.
+The file  configurations to be put in validation service
 
+```
 
 Spring File Max File Size 
 spring.servlet.multipart.max-file-size=10MB
@@ -36,6 +51,11 @@ spring.servlet.multipart.max-request-size=10MB
 
 1. Clone repo.
 2. Install the app with `mvn clean install`.
+3. Run below applications assigning different port to each service 
+   1. auth-service
+   2. register-service
+   3. onboard-service
+   4. validation-service
 
 
 

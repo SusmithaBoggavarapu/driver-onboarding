@@ -1,0 +1,12 @@
+{
+  "firstname" : "demo user",
+  "lastname" : "demo user last name",
+  "email": "demo.user@gmail.com",
+  "mobile" : "9435717759",
+  "password" : "user@pass",
+  "address" : {
+    "city" : "bengalore",
+    "state" : "karnataka",
+    "pincode" : 500086
+  }
+}

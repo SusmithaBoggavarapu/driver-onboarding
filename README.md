@@ -2,12 +2,10 @@
 
 
 
-### Prerequisites
-
-Setup Local   
+### Prerequisites - Local Setup
 
 1. Install Java 11 and Maven
-2. Install Mysql instance up and running
+2. Install Mysql server
 3. Install Kafka and Start kafka server by running below commands in Kafka root folder
 
     1. Start zookeeper - 2181 Port

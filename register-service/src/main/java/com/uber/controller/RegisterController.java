@@ -34,7 +34,7 @@ public class RegisterController extends BaseController{
     }
 
     @PutMapping
-    public ResponseEntity<Response> updateDriver(@Valid DriverDto driverDto) {
+    public ResponseEntity<Response> updateDriver(@RequestBody @Valid DriverDto driverDto, BindingResult result) {
         log.info("driver details {}", driverDto);
         registerService.updateDriverAndAuthenticate(driverDto);
         return ResponseEntity.ok(Response.builder().status("SUCCESS").payload(driverDto).build());

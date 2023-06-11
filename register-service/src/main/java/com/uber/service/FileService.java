@@ -1,6 +1,7 @@
 package com.uber.service;
 
 import com.uber.common.exception.ApplicationException;
+import com.uber.common.exception.BadRequestException;
 import com.uber.common.exception.Errors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,7 +30,7 @@ public class FileService {
     public File saveFile(MultipartFile file) {
 
         if (file.isEmpty()) {
-            throw new ApplicationException(Errors.EMPTY_FILE, String.format("Failed to store empty file %s", file.getOriginalFilename()));
+            throw new BadRequestException(Errors.EMPTY_FILE, String.format("Failed to store empty file %s", file.getOriginalFilename()));
         }
         try {
             Files.copy(file.getInputStream(), tmpPath.resolve(file.getOriginalFilename()));

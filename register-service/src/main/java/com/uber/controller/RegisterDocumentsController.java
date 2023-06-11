@@ -1,6 +1,8 @@
 package com.uber.controller;
 
 import com.uber.client.AuthClient;
+import com.uber.common.exception.BadRequestException;
+import com.uber.common.exception.Errors;
 import com.uber.common.model.DocumentType;
 import com.uber.common.response.Response;
 import com.uber.service.DocumentService;
@@ -46,12 +48,12 @@ public class RegisterDocumentsController extends BaseController {
         String mobile = authClient.validateUser(authorization);
 
         if (Objects.isNull(file.getOriginalFilename())) {
-            throw new IllegalArgumentException("file cannot be empty");
+            throw new BadRequestException(Errors.EMPTY_FILE);
         }
         DocumentType docTypeEnum = EnumUtils.getEnumIgnoreCase(DocumentType.class, documentType);
 
         if (Objects.isNull(docTypeEnum)) {
-            throw new IllegalArgumentException(String.format("unsupported document %s ", documentType));
+            throw new BadRequestException(Errors.UNSUPPORTED_DOCUMENT_TYPE);
         }
 
         File savedFile = postDocument(mobile, docTypeEnum, file);

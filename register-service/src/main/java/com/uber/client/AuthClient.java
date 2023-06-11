@@ -4,11 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.uber.common.exception.ApplicationException;
 import com.uber.common.exception.Errors;
+import com.uber.config.AppConfig;
 import com.uber.config.AuthResponseHandler;
 import com.uber.entity.AuthenticationResponse;
 import com.uber.entity.UserDto;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -24,6 +26,9 @@ public class AuthClient {
 
     @Value("${auth.url}")
     private String uri;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     private static final String REGISTER_ENDPOINT = "user/register";
     private static final String AUTHENTICATE_ENDPOINT = "user/authenticate";
@@ -41,11 +46,11 @@ public class AuthClient {
 
         try {
             String requestJson = new ObjectMapper().writeValueAsString(new UserDto(userName, password));
-            log.info("requestJson {} ", requestJson);
 
+            log.info("requestJson {} ", requestJson);
             HttpEntity<String> requestEntity = new HttpEntity<>(requestJson, headers);
 
-            RestTemplate restTemplate = new RestTemplate();
+            RestTemplate restTemplate = new AppConfig().restTemplate(3,3500);
             restTemplate.setErrorHandler(new AuthResponseHandler());
 
             response = restTemplate.exchange(url,
@@ -82,7 +87,6 @@ public class AuthClient {
 
         HttpEntity<String> requestEntity = new HttpEntity<>(StringUtils.EMPTY, headers);
 
-        RestTemplate restTemplate = new RestTemplate();
         restTemplate.setErrorHandler(new AuthResponseHandler());
 
         response = restTemplate.exchange(url,

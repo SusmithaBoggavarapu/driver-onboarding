@@ -1,5 +1,6 @@
 package com.uber.controller;
 
+import com.uber.common.exception.ApplicationException;
 import com.uber.common.exception.BadRequestException;
 import com.uber.common.exception.Errors;
 import com.uber.common.exception.NoContentException;
@@ -7,9 +8,11 @@ import com.uber.common.exception.UnauthorizedException;
 import com.uber.common.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
@@ -82,5 +85,12 @@ public class BaseController {
         log.error("no content  exception ", ex);
         Errors error = ex.getErrors();
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ErrorResponse(String.valueOf(error.getErrorCode()), error.getErrorMessage()));
+    }
+
+    @ExceptionHandler(ApplicationException.class)
+    public ResponseEntity<ErrorResponse> handleException(ApplicationException ex) {
+        log.error("application exception ", ex);
+        Errors error = ex.getErrors();
+        return ResponseEntity.internalServerError().body(new ErrorResponse(String.valueOf(error.getErrorCode()), error.getErrorMessage()));
     }
 }

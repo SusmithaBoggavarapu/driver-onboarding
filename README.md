@@ -35,11 +35,7 @@ spring.servlet.multipart.max-request-size=10MB
 ### Building, and Running Your App Locally
 
 1. Clone repo.
-2. CD into the cloned repo.
-3. Change the vault.path property in the application.yaml to the path of your local vault directory EX:(/Users/<user_name>/vault)
-4. Install the app with `mvn clean install`.
-5. Start the app in local-mode with `mvn -Dspring-boot.run.profiles=local spring-boot:run`.
-6. You can then access the app at http://localhost:8080
+2. Install the app with `mvn clean install`.
 
 
 
